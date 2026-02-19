@@ -395,7 +395,7 @@ Las interacciones del proyecto (menú hamburguesa, fetch de traducción, histori
 
 <div align="center">
 
-**Tu Nombre Aquí**
+**Gabriel Rojas**
 
 *Estudiante de Desarrollo Web · Facultad de Ingeniería*
 
@@ -407,19 +407,19 @@ Las interacciones del proyecto (menú hamburguesa, fetch de traducción, histori
 
 | Campo | Dato |
 |:---|:---|
-| **Nombre** | Tu Nombre Aquí |
-| **Matrícula** | 000000 |
-| **Institución** | Tu Universidad |
-| **Materia** | Desarrollo Web con Python |
-| **Semestre** | 2025-B |
-| **Docente** | Nombre del Docente |
+| **Nombre** | Ángel Gabriel Rojas Hernández |
+| **Matrícula** | 1224100712 |
+| **Institución** | UTNG |
+| **Materia** | Aplicaciones web orientadas a servcios |
+| **Cuatrimestre** | 5 |
+| **Docente** | Jose de Jesus Eduardo Barrientos Avalos |
 
 ---
 
 ## 📄 Licencia
 
 ```
-MIT License — Copyright (c) 2025 Tu Nombre
+MIT License — Copyright (c) 2025 TumbadoCt
 
 Se concede permiso, de forma gratuita, a cualquier persona que obtenga
 una copia de este software para utilizarlo sin restricciones, incluyendo
