@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block page_title %}Analytics & Estadísticas{% endblock %}
+
+{% block content %}
+<div class="stats-wrapper">
+
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-posts">
+      <span class="kpi-value">{{ data.total_posts }}</span>
+      <span class="kpi-label">Total Posts</span>
+      <span class="kpi-icon">⊡</span>
+    </div>
+    <div class="kpi-card kpi-users">
+      <span class="kpi-value">{{ data.total_users }}</span>
+      <span class="kpi-label">Usuarios</span>
+      <span class="kpi-icon">⊙</span>
+    </div>
+    <div class="kpi-card kpi-comments">
+      <span class="kpi-value">{{ data.total_comments }}</span>
+      <span class="kpi-label">Comentarios</span>
+      <span class="kpi-icon">◎</span>
+    </div>
+    <div class="kpi-card kpi-likes">
+      <span class="kpi-value">{{ data.total_likes }}</span>
+      <span class="kpi-label">Total Likes</span>
+      <span class="kpi-icon">♥</span>
+    </div>
+    <div class="kpi-card kpi-engage">
+      <span class="kpi-value">{{ data.engagement_rate }}</span>
+      <span class="kpi-label">Likes / Post</span>
+      <span class="kpi-icon">◈</span>
+    </div>
+  </div>
+
+  <div class="stats-columns">
+
+    <section class="stats-block">
+      <h2 class="stats-block-title">Top 5 Posts por Likes</h2>
+      <div class="top-posts-list">
+        {% for post in data.top_posts %}
+        <a href="/post/{{ post.id }}" class="top-post-item">
+          <span class="top-rank">#{{ loop.index }}</span>
+          <span class="top-post-title">{{ post.title[:55] }}…</span>
+          <span class="top-post-likes">♥ {{ post.reactions.likes if post.reactions else 0 }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="stats-block">
+      <h2 class="stats-block-title">Tags Más Populares</h2>
+      <div class="tags-chart">
+        {% set max_count = data.top_tags[0][1] if data.top_tags else 1 %}
+        {% for tag, count in data.top_tags %}
+        <div class="tag-bar-row">
+          <span class="tag-bar-label">#{{ tag }}</span>
+          <div class="tag-bar-track">
+            <div class="tag-bar-fill" style="width: {{ (count / max_count * 100)|round }}%"></div>
+          </div>
+          <span class="tag-bar-count">{{ count }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+  </div>
+
+  <section class="stats-block reactions-overview">
+    <h2 class="stats-block-title">Balance de Reacciones</h2>
+    <div class="reactions-bars">
+      {% set total = data.total_likes + data.total_dislikes %}
+      <div class="reaction-bar-item">
+        <span class="rb-label">♥ Likes</span>
+        <div class="rb-track">
+          <div class="rb-fill rb-likes"
+               style="width: {{ ((data.total_likes / total) * 100)|round if total else 0 }}%">
+          </div>
+        </div>
+        <span class="rb-num">{{ data.total_likes }}</span>
+      </div>
+      <div class="reaction-bar-item">
+        <span class="rb-label">↓ Dislikes</span>
+        <div class="rb-track">
+          <div class="rb-fill rb-dislikes"
+               style="width: {{ ((data.total_dislikes / total) * 100)|round if total else 0 }}%">
+          </div>
+        </div>
+        <span class="rb-num">{{ data.total_dislikes }}</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

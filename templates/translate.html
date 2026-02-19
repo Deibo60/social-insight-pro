@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block page_title %}Traductor al Español{% endblock %}
+
+{% block content %}
+<div class="tool-header">
+  <h2 class="section-title">Traductor Inglés → Español</h2>
+  <span class="api-pill">MyMemory API</span>
+</div>
+
+<div class="translator-wrapper">
+  <div class="translator-card">
+    <div class="translator-panels">
+
+      <!-- Panel izquierdo: entrada -->
+      <div class="trans-panel">
+        <div class="trans-panel-header">
+          <span class="lang-flag">🇺🇸</span>
+          <span class="lang-name">Inglés (origen)</span>
+          <span class="char-count" id="charCount">0 / 500</span>
+        </div>
+        <textarea
+          id="inputText"
+          class="trans-textarea"
+          placeholder="Escribe o pega texto en inglés aquí…"
+          maxlength="500"
+          oninput="updateCount(this)">
+        </textarea>
+        <div class="trans-examples">
+          <span class="examples-label">Ejemplos:</span>
+          <button class="example-btn" onclick="setExample('Hello, how are you today? I hope everything is going well.')">Saludo</button>
+          <button class="example-btn" onclick="setExample('Technology has changed the way we communicate with each other.')">Tech</button>
+          <button class="example-btn" onclick="setExample('The project was a great success thanks to teamwork and dedication.')">Trabajo</button>
+        </div>
+      </div>
+
+      <!-- Flecha central -->
+      <div class="trans-arrow">
+        <div id="arrowIcon" class="arrow-translate">⟺</div>
+      </div>
+
+      <!-- Panel derecho: resultado -->
+      <div class="trans-panel">
+        <div class="trans-panel-header">
+          <span class="lang-flag">🇲🇽</span>
+          <span class="lang-name">Español (destino)</span>
+          <button class="copy-btn" id="copyBtn" onclick="copyResult()" style="display:none">
+            ⧉ Copiar
+          </button>
+        </div>
+        <div id="outputPanel" class="trans-output">
+          <span class="output-placeholder">La traducción aparecerá aquí…</span>
+        </div>
+        <div id="qualityRow" class="quality-row" style="display:none">
+          <span class="quality-label">Calidad:</span>
+          <div class="quality-bar-track">
+            <div class="quality-bar-fill" id="qualityBar"></div>
+          </div>
+          <span class="quality-pct" id="qualityPct"></span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="translator-actions">
+      <button class="btn-primary" id="translateBtn" onclick="doTranslate()">
+        ⟺ Traducir
+      </button>
+      <button class="btn-secondary" onclick="clearAll()">✕ Limpiar</button>
+    </div>
+  </div>
+
+  <!-- Historial -->
+  <section class="history-section" id="historySection" style="display:none">
+    <h3 class="history-title">Historial de traducciones</h3>
+    <div id="historyList" class="history-list"></div>
+  </section>
+</div>
+
+<script>
+let historial = [];
+
+function updateCount(el) {
+  document.getElementById('charCount').textContent = `${el.value.length} / 500`;
+}
+
+function setExample(text) {
+  const ta = document.getElementById('inputText');
+  ta.value = text;
+  updateCount(ta);
+}
+
+function clearAll() {
+  document.getElementById('inputText').value = '';
+  document.getElementById('charCount').textContent = '0 / 500';
+  document.getElementById('outputPanel').innerHTML =
+    '<span class="output-placeholder">La traducción aparecerá aquí…</span>';
+  document.getElementById('outputPanel').classList.remove('has-result');
+  document.getElementById('qualityRow').style.display = 'none';
+  document.getElementById('copyBtn').style.display = 'none';
+}
+
+async function doTranslate() {
+  const text = document.getElementById('inputText').value.trim();
+  if (!text) return;
+
+  const btn    = document.getElementById('translateBtn');
+  const output = document.getElementById('outputPanel');
+  const arrow  = document.getElementById('arrowIcon');
+
+  btn.disabled = true;
+  btn.textContent = 'Traduciendo…';
+  arrow.classList.add('spinning');
+  output.classList.remove('has-result');
+  output.innerHTML = '<span class="translating">Conectando con MyMemory API…</span>';
+
+  try {
+    const resp = await fetch('/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await resp.json();
+
+    if (data.success) {
+      output.textContent = data.translated_text;
+      output.classList.add('has-result');
+
+      document.getElementById('qualityRow').style.display = 'flex';
+      document.getElementById('qualityBar').style.width   = data.quality + '%';
+      document.getElementById('qualityPct').textContent   = data.quality + '%';
+      document.getElementById('copyBtn').style.display    = 'inline-flex';
+
+      addToHistory(text, data.translated_text);
+    } else {
+      output.innerHTML = '<span class="trans-error">⚠ Error en la API. Intenta de nuevo.</span>';
+    }
+  } catch(e) {
+    output.innerHTML = '<span class="trans-error">⚠ Sin conexión.</span>';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '⟺ Traducir';
+  arrow.classList.remove('spinning');
+}
+
+function addToHistory(original, translated) {
+  historial.unshift({ original, translated });
+  if (historial.length > 5) historial.pop();
+
+  const section = document.getElementById('historySection');
+  const list    = document.getElementById('historyList');
+  section.style.display = 'block';
+  list.innerHTML = historial.map(h => `
+    <div class="history-item">
+      <p class="h-original">${h.original}</p>
+      <p class="h-arrow">⟶</p>
+      <p class="h-translated">${h.translated}</p>
+    </div>
+  `).join('');
+}
+
+function copyResult() {
+  const text = document.getElementById('outputPanel').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => btn.textContent = '⧉ Copiar', 1500);
+  });
+}
+</script>
+{% endblock %}

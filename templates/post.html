@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block page_title %}Detalle del Post{% endblock %}
+
+{% block content %}
+<a href="/" class="back-link">← Regresar al Feed</a>
+
+<div class="post-detail-wrapper">
+  <article class="post-detail-card">
+    <div class="post-header">
+      <div class="avatar-lg">{{ post.userId }}</div>
+      <div>
+        <h1 class="post-detail-title">{{ post.title }}</h1>
+        <div class="post-meta-row">
+          <span class="post-meta-item">Usuario #{{ post.userId }}</span>
+          <span class="post-meta-item">POST #{{ post.id }}</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="post-detail-body">{{ post.body }}</p>
+
+    <div class="translate-inline">
+      <button class="btn-translate" onclick="translatePost(`{{ post.body | replace('`', '') }}`)">
+        ⟺ Traducir al Español
+      </button>
+      <div id="translation-result" class="translation-box hidden"></div>
+    </div>
+
+    <div class="post-tags-row">
+      {% for tag in post.tags %}
+      <span class="tag tag-lg">#{{ tag }}</span>
+      {% endfor %}
+    </div>
+
+    <div class="post-reactions-bar">
+      <div class="reaction-box like-box">
+        <span class="reaction-num">{{ post.reactions.likes if post.reactions else 0 }}</span>
+        <span class="reaction-label">♥ Likes</span>
+      </div>
+      <div class="reaction-box dislike-box">
+        <span class="reaction-num">{{ post.reactions.dislikes if post.reactions else 0 }}</span>
+        <span class="reaction-label">↓ Dislikes</span>
+      </div>
+      <div class="reaction-box views-box">
+        <span class="reaction-num">{{ post.views if post.views else '—' }}</span>
+        <span class="reaction-label">◎ Vistas</span>
+      </div>
+    </div>
+  </article>
+
+  <section class="comments-section">
+    <h2 class="comments-title">
+      Comentarios <span class="count-badge">{{ comments|length }}</span>
+    </h2>
+    {% if comments %}
+      {% for c in comments %}
+      <div class="comment-card">
+        <div class="comment-header">
+          <span class="comment-user">{{ c.user.username if c.user else 'Usuario' }}</span>
+          <span class="comment-likes">♥ {{ c.likes if c.likes else 0 }}</span>
+        </div>
+        <p class="comment-body">{{ c.body }}</p>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="no-comments">Sin comentarios.</p>
+    {% endif %}
+  </section>
+</div>
+
+<script>
+async function translatePost(text) {
+  const box = document.getElementById('translation-result');
+  box.classList.remove('hidden');
+  box.innerHTML = '<span class="translating">Traduciendo…</span>';
+
+  try {
+    const resp = await fetch('/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await resp.json();
+    if (data.success) {
+      box.innerHTML = `
+        <span class="trans-label">🇲🇽 Traducción al Español</span>
+        <p class="trans-text">${data.translated_text}</p>
+        <span class="trans-quality">Calidad: ${data.quality}%</span>
+      `;
+    } else {
+      box.innerHTML = '<span class="trans-error">⚠ Error al traducir. Intenta de nuevo.</span>';
+    }
+  } catch(e) {
+    box.innerHTML = '<span class="trans-error">⚠ Sin conexión.</span>';
+  }
+}
+</script>
+{% endblock %}

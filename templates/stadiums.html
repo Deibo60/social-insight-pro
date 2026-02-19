@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block page_title %}Buscador de Estadios de Fútbol{% endblock %}
+
+{% block content %}
+<div class="tool-header">
+  <h2 class="section-title">Estadios de Fútbol Cercanos</h2>
+  <span class="api-pill api-pill-green">OpenStreetMap · ip-api</span>
+</div>
+
+<!-- Búsqueda -->
+<form method="GET" action="/stadiums" class="stadium-search-bar">
+  <div class="search-input-wrap">
+    <span class="search-icon">⊙</span>
+    <input
+      type="text"
+      name="city"
+      class="search-input"
+      placeholder="Buscar ciudad… ej: Guadalajara, Madrid, Buenos Aires"
+      value="{{ search_city }}"
+      autocomplete="off"
+    />
+  </div>
+  <div class="filter-group">
+    <label class="filter-label">Radio (km)</label>
+    <select name="radius" class="filter-select">
+      {% for r in [20, 50, 100, 200] %}
+      <option value="{{ r }}" {% if r == radius %}selected{% endif %}>{{ r }} km</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn-primary">⊞ Buscar</button>
+  {% if location and location.city %}
+  <a href="/stadiums?radius={{ radius }}" class="btn-secondary">◎ Mi ubicación</a>
+  {% endif %}
+</form>
+
+<!-- Ubicación detectada -->
+{% if location and location.success %}
+<div class="location-bar">
+  <span class="loc-icon">◎</span>
+  <span class="loc-text">
+    {% if search_city %}
+      Buscando cerca de <strong>{{ search_city }}</strong>
+    {% else %}
+      Ubicación detectada: <strong>{{ location.city }}, {{ location.region }}, {{ location.country }}</strong>
+    {% endif %}
+  </span>
+  <span class="loc-coords">{{ "%.4f"|format(location.lat) }}, {{ "%.4f"|format(location.lon) }}</span>
+</div>
+{% endif %}
+
+<!-- Resultados -->
+{% if stadiums %}
+
+<div class="stadiums-summary">
+  <span class="count-badge">{{ stadiums|length }} estadios encontrados</span>
+  <span class="summary-radius">en un radio de {{ radius }} km</span>
+</div>
+
+<!-- Mapa embebido -->
+<div class="map-card">
+  <div class="map-header">
+    <span class="map-title">◎ Mapa de la zona</span>
+    <a href="https://www.openstreetmap.org/#map=10/{{ location.lat }}/{{ location.lon }}"
+       target="_blank" class="map-link">
+      Ver en OpenStreetMap ↗
+    </a>
+  </div>
+  <div class="map-embed-wrap">
+    <iframe
+      src="https://www.openstreetmap.org/export/embed.html?bbox={{ location.lon - 0.5 }},{{ location.lat - 0.5 }},{{ location.lon + 0.5 }},{{ location.lat + 0.5 }}&layer=mapnik&marker={{ location.lat }}/{{ location.lon }}"
+      class="map-iframe"
+      loading="lazy"
+      title="Mapa de estadios">
+    </iframe>
+  </div>
+</div>
+
+<!-- Tarjetas de estadios -->
+<div class="stadiums-grid">
+  {% for s in stadiums %}
+  <article class="stadium-card" style="--delay: {{ loop.index0 * 0.05 }}s">
+    <div class="stadium-card-top">
+      <span class="stadium-rank">#{{ loop.index }}</span>
+      <span class="stadium-distance">{{ s.distance }} km</span>
+    </div>
+
+    <h3 class="stadium-name">{{ s.name }}</h3>
+
+    <div class="stadium-details">
+      {% if s.city %}
+      <div class="stadium-detail">
+        <span class="detail-icon">◎</span>
+        <span>{{ s.city }}{% if s.country %}, {{ s.country }}{% endif %}</span>
+      </div>
+      {% endif %}
+      {% if s.capacity and s.capacity != '—' %}
+      <div class="stadium-detail">
+        <span class="detail-icon">⊙</span>
+        <span>Capacidad: <strong>{{ s.capacity }}</strong></span>
+      </div>
+      {% endif %}
+      {% if s.operator %}
+      <div class="stadium-detail">
+        <span class="detail-icon">⊡</span>
+        <span>{{ s.operator }}</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="stadium-footer">
+      <span class="stadium-coords">{{ "%.5f"|format(s.lat) }}, {{ "%.5f"|format(s.lon) }}</span>
+      <div class="stadium-actions">
+        <a href="https://www.openstreetmap.org/?mlat={{ s.lat }}&mlon={{ s.lon }}#map=16/{{ s.lat }}/{{ s.lon }}"
+           target="_blank" class="btn-map">
+          Ver mapa ↗
+        </a>
+        {% if s.website %}
+        <a href="{{ s.website }}" target="_blank" class="btn-map btn-web">Web ↗</a>
+        {% endif %}
+      </div>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+{% elif location and location.success %}
+<div class="empty-state">
+  <div class="empty-icon">◎</div>
+  <h3>No se encontraron estadios</h3>
+  <p>Intenta aumentar el radio de búsqueda o busca otra ciudad.</p>
+</div>
+
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">⊙</div>
+  <h3>Busca una ciudad para comenzar</h3>
+  <p>Escribe el nombre de cualquier ciudad del mundo para encontrar estadios de fútbol cercanos con datos reales de OpenStreetMap.</p>
+</div>
+{% endif %}
+
+{% endblock %}

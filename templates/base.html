@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Social Insight Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+
+    <div class="sidebar-logo">
+      <span class="logo-icon">◈</span>
+      <span class="logo-text">Social<br><strong>Insight</strong></span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/" class="nav-item {% if request.path == '/' %}active{% endif %}" onclick="closeSidebar()">
+        <span class="nav-icon">⊡</span><span>Feed</span>
+      </a>
+      <a href="/users" class="nav-item {% if '/user' in request.path %}active{% endif %}" onclick="closeSidebar()">
+        <span class="nav-icon">⊙</span><span>Usuarios</span>
+      </a>
+      <a href="/stats" class="nav-item {% if request.path == '/stats' %}active{% endif %}" onclick="closeSidebar()">
+        <span class="nav-icon">⊞</span><span>Analytics</span>
+      </a>
+      <div class="nav-divider"><span>Herramientas</span></div>
+      <a href="/translate" class="nav-item {% if request.path == '/translate' %}active{% endif %}" onclick="closeSidebar()">
+        <span class="nav-icon">⟺</span><span>Traductor</span>
+      </a>
+      <a href="/stadiums" class="nav-item {% if request.path == '/stadiums' %}active{% endif %}" onclick="closeSidebar()">
+        <span class="nav-icon">◎</span><span>Estadios</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="api-badge"><span class="dot"></span>3 APIs activas</div>
+      <p class="api-source">DummyJSON · MyMemory<br>ip-api · Overpass OSM</p>
+    </div>
+  </aside>
+
+  <div class="main-wrapper">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
+      <div class="topbar-actions">
+        <span class="badge-live">● LIVE DATA</span>
+      </div>
+    </header>
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script>
+    const sidebar   = document.getElementById('sidebar');
+    const overlay   = document.getElementById('sidebarOverlay');
+    const hamburger = document.getElementById('hamburger');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+      hamburger.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      hamburger.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function toggleSidebar() {
+      sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar(); });
+  </script>
+
+</body>
+</html>
