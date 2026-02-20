@@ -1,3 +1,6 @@
+Readme · MD
+Copiar
+
 <div align="center">
 
 # ◈ Social Insight Pro
@@ -259,16 +262,11 @@ http://127.0.0.1:5000
 
 ## 📸 Capturas de Pantalla
 
-> Agrega tus capturas reales en una carpeta `screenshots/` dentro del proyecto.
-
 ### 🖥️ Feed Principal
-![Feed]()
+![Feed](screenshots/01_feed.png)
 
-### 📝 Detalle de Post con Traducción Inline<img width="1303" height="672" alt="1" src="https://github.com/user-attachments/assets/3c549379-7c1e-4cb4-bb39-0b5b3f895f1e" />
-
-![Post Detail](![Uploading 1.png…]()
-
-)
+### 📝 Detalle de Post con Traducción Inline
+![Post Detail](screenshots/02_post_detail.png)
 
 ### 👥 Directorio de Usuarios
 ![Users](screenshots/03_users.png)
@@ -397,11 +395,11 @@ Las interacciones del proyecto (menú hamburguesa, fetch de traducción, histori
 
 <div align="center">
 
-**Gabriel Rojas**
+**Angel Gabriel Rojas Hernandez**
 
-*Estudiante de Desarrollo Web · Facultad de Ingeniería*
+*Estudiante de Desarrollo Web · Licenciatura*
 
-[![GitHub](https://img.shields.io/badge/GitHub-tu--usuario-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/tu-usuario)
+[![GitHub](https://img.shields.io/badge/GitHub-tu--usuario-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Deibo60)
 
 </div>
 
@@ -409,10 +407,10 @@ Las interacciones del proyecto (menú hamburguesa, fetch de traducción, histori
 
 | Campo | Dato |
 |:---|:---|
-| **Nombre** | Ángel Gabriel Rojas Hernández |
+| **Nombre** | Gabriel Rojas |
 | **Matrícula** | 1224100712 |
 | **Institución** | UTNG |
-| **Materia** | Aplicaciones web orientadas a servcios |
+| **Materia** | Aplicacines web orientadas a servicios |
 | **Cuatrimestre** | 5 |
 | **Docente** | Jose de Jesus Eduardo Barrientos Avalos |
 
@@ -421,7 +419,7 @@ Las interacciones del proyecto (menú hamburguesa, fetch de traducción, histori
 ## 📄 Licencia
 
 ```
-MIT License — Copyright (c) 2025 TumbadoCt
+MIT License — Copyright (c) 2025 TumbadoCT
 
 Se concede permiso, de forma gratuita, a cualquier persona que obtenga
 una copia de este software para utilizarlo sin restricciones, incluyendo
