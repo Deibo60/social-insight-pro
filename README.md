@@ -262,10 +262,12 @@ http://127.0.0.1:5000
 > Agrega tus capturas reales en una carpeta `screenshots/` dentro del proyecto.
 
 ### 🖥️ Feed Principal
-![Feed](screenshots/01_feed.png)
+![Feed]()
 
-### 📝 Detalle de Post con Traducción Inline
-![Post Detail](<img width="1098" height="566" alt="image" src="https://github.com/user-attachments/assets/fb456d62-0fcc-4b2d-9c44-a47ec01ae6c0" />
+### 📝 Detalle de Post con Traducción Inline<img width="1303" height="672" alt="1" src="https://github.com/user-attachments/assets/3c549379-7c1e-4cb4-bb39-0b5b3f895f1e" />
+
+![Post Detail](![Uploading 1.png…]()
+
 )
 
 ### 👥 Directorio de Usuarios
